@@ -74,7 +74,7 @@ public class LoginActivity extends AppCompatActivity {
                                     loginPrefsEditor.clear();
                                     loginPrefsEditor.commit();
                                 }
-                                showAlertWithMessage("Success");
+                                goToActivity(HomeActivity.class);
                             } else {
                                 // If sign in fails, display a message to the user.
                                 showAlertWithMessage("Wrong Email/Password");
@@ -84,18 +84,10 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             showAlertWithMessage("Please fill email & password");
         }
-
-//        if (userEmail.equals("daian@mail.com") && password.equals("123456")) {
-//            Toast.makeText(LoginActivity.this, "Success", Toast.LENGTH_SHORT).show();
-////            Intent intent = new Intent(this, HomeActivity.class);
-////            intent.putExtra(USER_EMAIL, userEmail);
-////            this.startActivity(intent);
-
-
     }
 
     public void signupPressed(View view) {
-
+        goToActivity(SignupActivity.class);
     }
 
     private boolean areAllFieldsFilled() {
@@ -113,6 +105,11 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
         alertDialog.show();
+    }
+
+    private void goToActivity(Class<?> className) {
+        Intent intent = new Intent(this, className);
+        this.startActivity(intent);
     }
 
 }
