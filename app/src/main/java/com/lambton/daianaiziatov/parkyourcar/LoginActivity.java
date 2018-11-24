@@ -1,7 +1,9 @@
 package com.lambton.daianaiziatov.parkyourcar;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -44,15 +46,15 @@ public class LoginActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 // Sign in success, update UI with the signed-in user's information
-                                Toast.makeText(LoginActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                                showAlertWithMessage("Success");
                             } else {
                                 // If sign in fails, display a message to the user.
-                                Toast.makeText(LoginActivity.this, "Wrong User/Password", Toast.LENGTH_SHORT).show();
+                                showAlertWithMessage("Wrong Email/Password");
                             }
                         }
                     });
         } else {
-            Toast.makeText(LoginActivity.this, "Please fill email & password", Toast.LENGTH_SHORT).show();
+            showAlertWithMessage("Please fill email & password");
         }
 
 //        if (userEmail.equals("daian@mail.com") && password.equals("123456")) {
@@ -70,6 +72,19 @@ public class LoginActivity extends AppCompatActivity {
 
     private boolean areAllFieldsFilled() {
         return !userPasswordEditText.getText().toString().isEmpty() && !userEmailEditText.getText().toString().isEmpty();
+    }
+
+    private void showAlertWithMessage(String message) {
+        AlertDialog alertDialog = new AlertDialog.Builder(LoginActivity.this).create();
+        alertDialog.setTitle("Alert");
+        alertDialog.setMessage(message);
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
     }
 
 }

@@ -5,4 +5,5 @@
     <string name="remember_me">Remember me</string>
     <string name="user_email_tint">User Email</string>
     <string name="user_password_tint">Password</string>
+
 </resources>
