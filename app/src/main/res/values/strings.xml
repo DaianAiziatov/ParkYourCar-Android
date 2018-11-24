@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Day2LoginScreen</string>
+    <string name="app_name">ParkYourCar</string>
     <string name="login">LOGIN</string>
     <string name="signup">SIGNUP</string>
     <string name="remember_me">Remember me</string>
