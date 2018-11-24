@@ -4,15 +4,72 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="32dp"
     tools:context=".LoginActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <ImageView
+        android:id="@+id/logo_image_view"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/login_screen_logo"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/user_email_edit_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/user_email_tint"
+        android:inputType="textWebEmailAddress"
+        android:drawableStart="@drawable/ic_email"
+        app:layout_constraintTop_toBottomOf="@id/logo_image_view"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <EditText
+        android:id="@+id/user_password_edit_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/user_password_tint"
+        android:inputType="textPassword"
+        android:drawableStart="@drawable/ic_password"
+        app:layout_constraintTop_toBottomOf="@id/user_email_edit_view"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <Switch
+        android:id="@+id/rememberme_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/remember_me"
+        android:textAppearance="?android:textAppearanceSmall"
+        app:layout_constraintTop_toBottomOf="@id/user_password_edit_view"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <Button
+        android:id="@+id/login_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/login"
+        android:textSize="16dp"
+        app:layout_constraintStart_toEndOf="@id/signup_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rememberme_switch"
+        android:onClick="loginPressed"/>
+
+    <Button
+        android:id="@+id/signup_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/signup"
+        android:textSize="16dp"
+        app:layout_constraintEnd_toStartOf="@id/login_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rememberme_switch"
+        android:onClick="signupPressed"/>
 
 </android.support.constraint.ConstraintLayout>
