@@ -19,34 +19,42 @@ public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
 
+    private EditText userEmailEditText;
+    private EditText userPasswordEditText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        userEmailEditText = (EditText) findViewById(R.id.user_email_edit_view);
+        userPasswordEditText = (EditText) findViewById(R.id.user_password_edit_view);
 
         mAuth = FirebaseAuth.getInstance();
 
     }
 
     public void loginPressed(View view) {
-        EditText userEmailEditText = (EditText) findViewById(R.id.user_email_edit_view);
-        String userEmail = String.valueOf(userEmailEditText.getText());
-        EditText userPasswordEditText = (EditText) findViewById(R.id.user_password_edit_view);
-        String password = String.valueOf(userPasswordEditText.getText());
-
-        mAuth.signInWithEmailAndPassword(userEmail, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Toast.makeText(LoginActivity.this, "Success", Toast.LENGTH_SHORT).show();
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Toast.makeText(LoginActivity.this, "Wrong User/Password", Toast.LENGTH_SHORT).show();
+        if (areAllFieldsFilled()) {
+            String userEmail = userEmailEditText.getText().toString();
+            String password = userPasswordEditText.getText().toString();
+            mAuth.signInWithEmailAndPassword(userEmail, password)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI with the signed-in user's information
+                                Toast.makeText(LoginActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Toast.makeText(LoginActivity.this, "Wrong User/Password", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                });
+                    });
+        } else {
+            Toast.makeText(LoginActivity.this, "Please fill email & password", Toast.LENGTH_SHORT).show();
+        }
+
 //        if (userEmail.equals("daian@mail.com") && password.equals("123456")) {
 //            Toast.makeText(LoginActivity.this, "Success", Toast.LENGTH_SHORT).show();
 ////            Intent intent = new Intent(this, HomeActivity.class);
@@ -54,6 +62,14 @@ public class LoginActivity extends AppCompatActivity {
 ////            this.startActivity(intent);
 
 
+    }
+
+    public void signupPressed(View view) {
+
+    }
+
+    private boolean areAllFieldsFilled() {
+        return !userPasswordEditText.getText().toString().isEmpty() && !userEmailEditText.getText().toString().isEmpty();
     }
 
 }
