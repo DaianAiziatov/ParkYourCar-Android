@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -18,8 +17,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.lambton.daianaiziatov.parkyourcar.Models.User;
 
-import java.util.Dictionary;
 import java.util.HashMap;
 
 public class SignupActivity extends AppCompatActivity {
@@ -30,6 +29,12 @@ public class SignupActivity extends AppCompatActivity {
     private EditText numberEditText;
     private EditText passwordEditText;
     private EditText passwordConfirmationEditText;
+
+    private String email;
+    private String password;
+    private String firstName;
+    private String lastName;
+    private String contactNumber;
 
     private FirebaseAuth mAuth;
 
@@ -51,33 +56,19 @@ public class SignupActivity extends AppCompatActivity {
     public void signUp(View view) {
         if (areAllFieldsFilled()) {
             if (isPasswordValid()) {
-                final String email = emailEdittext.getText().toString();
-                String password = passwordEditText.getText().toString();
+                email = emailEdittext.getText().toString();
+                password = passwordEditText.getText().toString();
                 mAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
-                                    // Sign in success, update UI with the signed-in user's information
-                                    Toast.makeText(SignupActivity.this, "User created successfully.", Toast.LENGTH_SHORT).show();
-                                    // Write user details in database
-                                    FirebaseUser user = mAuth.getCurrentUser();
-                                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                    DatabaseReference myRef = database.getReference().child("users").child(user.getUid());
-                                    String firstName = firstNameEditText.getText().toString();
-                                    String lastName = lastNameEditText.getText().toString();
-                                    String contactNumber = numberEditText.getText().toString();
-                                    HashMap<String, String> data = new HashMap<>();
-                                    data.put("firstName", firstName);
-                                    data.put("lastName", lastName);
-                                    data.put("email", email);
-                                    data.put("contactNumber",contactNumber);
-                                    myRef.setValue(data);
+                                    writeDetailsToFirebase();
                                     goToActivity(LoginActivity.class);
                                 } else {
-                                    // If sign in fails, display a message to the user.
-                                    Toast.makeText(SignupActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                                    showAlertWithMessage("Error occurred while creating new user.\nPlease try again.");
                                 }
+
                             }
                         });
             } else {
@@ -86,6 +77,20 @@ public class SignupActivity extends AppCompatActivity {
         } else {
             showAlertWithMessage("Please fill all fields.");
         }
+    }
+
+    private void writeDetailsToFirebase(){
+        FirebaseUser user = mAuth.getCurrentUser();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference().child("users").child(user.getUid());
+
+        firstName = firstNameEditText.getText().toString();
+        lastName = lastNameEditText.getText().toString();
+        contactNumber = numberEditText.getText().toString();
+        email = emailEdittext.getText().toString();
+
+        User userInstance = new User(firstName, lastName, contactNumber, email);
+        myRef.setValue(userInstance.toMap());
     }
 
     private boolean areAllFieldsFilled() {
