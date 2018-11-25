@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -94,23 +95,72 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     private boolean areAllFieldsFilled() {
-        boolean result = !firstNameEditText.getText().toString().isEmpty() &&
-                !lastNameEditText.getText().toString().isEmpty() &&
-                !emailEdittext.getText().toString().isEmpty() &&
-                !numberEditText.getText().toString().isEmpty() &&
-                !passwordEditText.getText().toString().isEmpty() &&
-                !passwordConfirmationEditText.getText().toString().isEmpty();
-        return result;
+        boolean valid = true;
+
+        String firstName = firstNameEditText.getText().toString();
+        if (TextUtils.isEmpty(firstName)) {
+            firstNameEditText.setError("Required.");
+            valid = false;
+        } else {
+            firstNameEditText.setError(null);
+        }
+
+        String lastName = lastNameEditText.getText().toString();
+        if (TextUtils.isEmpty(lastName)) {
+            lastNameEditText.setError("Required.");
+            valid = false;
+        } else {
+            lastNameEditText.setError(null);
+        }
+
+        String email = emailEdittext.getText().toString();
+        if (TextUtils.isEmpty(email)) {
+            emailEdittext.setError("Required.");
+            valid = false;
+        } else {
+            emailEdittext.setError(null);
+        }
+
+        String number = numberEditText.getText().toString();
+        if (TextUtils.isEmpty(number)) {
+            numberEditText.setError("Required.");
+            valid = false;
+        } else {
+            numberEditText.setError(null);
+        }
+
+
+        String password = passwordEditText.getText().toString();
+        if (TextUtils.isEmpty(password)) {
+            passwordEditText.setError("Required.");
+            valid = false;
+        } else {
+            passwordEditText.setError(null);
+        }
+
+        String passwordConfirmation = passwordConfirmationEditText.getText().toString();
+        if (TextUtils.isEmpty(passwordConfirmation)) {
+            passwordConfirmationEditText.setError("Required.");
+            valid = false;
+        } else {
+            passwordConfirmationEditText.setError(null);
+        }
+
+        return valid;
     }
 
     private boolean isPasswordValid() {
-        if (!passwordEditText.getText().toString().isEmpty() && !passwordConfirmationEditText.getText().toString().isEmpty()) {
-            String password = passwordEditText.getText().toString();
-            String passwordConfirmation = passwordConfirmationEditText.getText().toString();
-            return password.equals(passwordConfirmation);
+        boolean valid = true;
+
+        String password = passwordEditText.getText().toString();
+        String passwordConfirmation = passwordConfirmationEditText.getText().toString();
+        if (!password.equals(passwordConfirmation)) {
+            passwordConfirmationEditText.setError("Not match.");
+            valid = false;
         } else {
-            return false;
+            passwordConfirmationEditText.setError(null);
         }
+        return valid;
     }
 
     private void showAlertWithMessage(String message) {
