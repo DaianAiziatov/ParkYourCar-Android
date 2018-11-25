@@ -21,18 +21,19 @@
         android:id="@+id/user_email_edit_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/user_email_tint"
-        android:inputType="textWebEmailAddress"
         android:drawableStart="@drawable/ic_email"
-        app:layout_constraintTop_toBottomOf="@id/logo_image_view"
+        android:hint="@string/user_email_hint"
+        android:inputType="textWebEmailAddress"
+        app:layout_constraintHorizontal_bias="0.25"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/logo_image_view" />
 
     <EditText
         android:id="@+id/user_password_edit_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/user_password_tint"
+        android:hint="@string/user_password_hint"
         android:inputType="textPassword"
         android:drawableStart="@drawable/ic_password"
         app:layout_constraintTop_toBottomOf="@id/user_email_edit_view"
