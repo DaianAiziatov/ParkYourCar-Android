@@ -2,9 +2,15 @@ package com.lambton.daianaiziatov.parkyourcar;
 
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -19,6 +25,8 @@ import java.util.Date;
 
 public class HomeActivity extends AppCompatActivity {
 
+    private DrawerLayout mDrawerLayout;
+
     private TextView emailTextView;
     private TextView lastLoginTextView;
     private TextView ticketsTotalTextView;
@@ -32,6 +40,31 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionbar = getSupportActionBar();
+        actionbar.setDisplayHomeAsUpEnabled(true);
+        actionbar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
+
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        // set item as selected to persist highlight
+                        menuItem.setChecked(true);
+                        // close drawer when item is tapped
+                        mDrawerLayout.closeDrawers();
+
+                        // Add code here to update the UI based on the item selected
+                        // For example, swap UI fragments here
+
+                        return true;
+                    }
+                });
+
 
         emailTextView = (TextView) findViewById(R.id.email_text_view);
         lastLoginTextView = (TextView) findViewById(R.id.login_date_text_view);
@@ -48,6 +81,16 @@ public class HomeActivity extends AppCompatActivity {
         Date loginDate = new Date(dateInMS);
         lastLoginTextView.setText("Last login: " + loginDate.toString());
         loadNumberOfParkingTickets();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                mDrawerLayout.openDrawer(GravityCompat.START);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void loadNumberOfParkingTickets() {
