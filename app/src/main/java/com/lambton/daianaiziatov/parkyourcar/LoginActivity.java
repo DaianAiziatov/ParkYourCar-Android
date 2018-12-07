@@ -74,7 +74,7 @@ public class LoginActivity extends AppCompatActivity {
                                 }
                                 loginPrefsEditor.putLong("logDate", System.currentTimeMillis());
                                 loginPrefsEditor.commit();
-                                goToActivity(HomeActivity.class);
+                                goToActivity(MainActivity.class);
                             } else {
                                 // If sign in fails, display a message to the user.
                                 showAlertWithMessage("Wrong Email/Password");
