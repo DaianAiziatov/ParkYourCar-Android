@@ -16,10 +16,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
+
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,12 +50,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        mAuth = FirebaseAuth.getInstance();
+
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
 
         fragmentTransaction.add(R.id.container, new HomeFragment(),"fragment_home");
-        //fragmentTransaction.add(new AboutUsFragment(), "fragment_about_us");
         fragmentTransaction.commit();
+        setTitle("Home");
     }
 
     @Override
@@ -95,19 +101,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (id == R.id.nav_home) {
             fragmentTransaction.replace(R.id.container, new HomeFragment(),"fragment_home");
+            setTitle("Home");
         } else if (id == R.id.nav_report) {
-
+            setTitle("Report");
         } else if (id == R.id.nav_add_ticket) {
-
+            setTitle("New Ticket");
         } else if (id == R.id.nav_location) {
-
+            setTitle("Location");
         } else if (id == R.id.nav_update_profile) {
-
+            setTitle("Update Profile");
         } else if (id == R.id.nav_instruction) {
-
+            setTitle("Instruction");
         } else if (id == R.id.nav_contact) {
 
         } else if (id == R.id.nav_logout) {
+            mAuth.signOut();
             goToActivity(LoginActivity.class);
         }
 
