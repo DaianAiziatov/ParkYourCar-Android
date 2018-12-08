@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -68,13 +69,12 @@ public class LoginActivity extends AppCompatActivity {
                                     loginPrefsEditor.putBoolean("saveLogin", true);
                                     loginPrefsEditor.putString("email", userEmail);
                                     loginPrefsEditor.putString("password", password);
-                                    loginPrefsEditor.putLong("logDate", System.currentTimeMillis());
-                                    loginPrefsEditor.commit();
                                 } else {
                                     loginPrefsEditor.clear();
-                                    loginPrefsEditor.commit();
                                 }
-                                goToActivity(HomeActivity.class);
+                                loginPrefsEditor.putLong("logDate", System.currentTimeMillis());
+                                loginPrefsEditor.commit();
+                                goToActivity(MainActivity.class);
                             } else {
                                 // If sign in fails, display a message to the user.
                                 showAlertWithMessage("Wrong Email/Password");
@@ -91,7 +91,24 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean areAllFieldsFilled() {
-        return !userPasswordEditText.getText().toString().isEmpty() && !userEmailEditText.getText().toString().isEmpty();
+        boolean valid = true;
+
+        String email = userEmailEditText.getText().toString();
+        if (TextUtils.isEmpty(email)) {
+            userEmailEditText.setError("Required.");
+            valid = false;
+        } else {
+            userEmailEditText.setError(null);
+        }
+
+        String password = userPasswordEditText.getText().toString();
+        if (TextUtils.isEmpty(password)) {
+            userPasswordEditText.setError("Required.");
+            valid = false;
+        } else {
+            userPasswordEditText.setError(null);
+        }
+        return valid;
     }
 
     private void showAlertWithMessage(String message) {
