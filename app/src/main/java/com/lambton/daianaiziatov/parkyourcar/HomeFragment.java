@@ -7,6 +7,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +22,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.lambton.daianaiziatov.parkyourcar.Models.Car;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Map;
 
 public class HomeFragment extends Fragment {
 
@@ -28,11 +34,16 @@ public class HomeFragment extends Fragment {
     private TextView emailTextView;
     private TextView lastLoginTextView;
     private TextView ticketsTotalTextView;
+    private RecyclerView recyclerView;
+
     private SharedPreferences loginPreferences;
     private FirebaseAuth mAuth;
     private FirebaseDatabase database;
     private FirebaseUser user;
     private int numberOfTickets;
+
+    private ArrayList<Car> carArrayList;
+    private CarListAdapter carListAdapter;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -40,8 +51,8 @@ public class HomeFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         View homeView =  inflater.inflate(R.layout.fragment_home, container, false);
 
         emailTextView = (TextView) homeView.findViewById(R.id.email_text_view);
@@ -54,13 +65,55 @@ public class HomeFragment extends Fragment {
         database = FirebaseDatabase.getInstance();
         user = mAuth.getCurrentUser();
 
+        carArrayList = new ArrayList<>();
+
         emailTextView.setText("User email: " + user.getEmail());
         long dateInMS = loginPreferences.getLong("logDate", 0);
         Date loginDate = new Date(dateInMS);
         lastLoginTextView.setText("Last login: " + loginDate.toString());
         loadNumberOfParkingTickets();
+        loadCarList();
+        //Log.d("CARS_COUNT", String.valueOf(carArrayList.size()));
+
+        recyclerView = homeView.findViewById(R.id.recycler_view);
+
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(homeView.getContext());
+        recyclerView.setLayoutManager(layoutManager);
+
+        carListAdapter = new CarListAdapter(carArrayList, homeView.getContext());
+        recyclerView.setAdapter(carListAdapter);
 
         return homeView;
+    }
+
+    private void loadCarList() {
+        Log.d("INSIDELOADCAR", "true");
+        DatabaseReference ticketsReference = database.getReference().child("users").child(user.getUid()).child("cars");
+        ticketsReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d("DATASNAPSHOT", dataSnapshot.toString());
+                for (DataSnapshot data: dataSnapshot.getChildren()) {
+                    final Map<String, String> value = (Map<String, String>) data.getValue();
+                    final String id = data.getKey();
+                    final String model = value.get("model");
+                    final String color = value.get("color");
+                    final String manufacturer = value.get("manufacturer");
+                    final String plate = value.get("plate");
+                    final Car car = new Car(id, manufacturer, model, plate, color);
+                    Log.d("CARS_ADDED", car.toString());
+                    carArrayList.add(car);
+                }
+                Log.d("CARS_COUNT", String.valueOf(carArrayList.size()));
+                carListAdapter.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                showAlertWithMessage(error.getMessage());
+            }
+        });
     }
 
     private void loadNumberOfParkingTickets() {
