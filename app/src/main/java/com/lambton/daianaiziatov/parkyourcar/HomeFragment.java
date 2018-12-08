@@ -13,7 +13,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -35,6 +37,7 @@ public class HomeFragment extends Fragment {
     private TextView lastLoginTextView;
     private TextView ticketsTotalTextView;
     private RecyclerView recyclerView;
+    private Button addCarButton;
 
     private SharedPreferences loginPreferences;
     private FirebaseAuth mAuth;
@@ -58,6 +61,7 @@ public class HomeFragment extends Fragment {
         emailTextView = (TextView) homeView.findViewById(R.id.email_text_view);
         lastLoginTextView = (TextView) homeView.findViewById(R.id.login_date_text_view);
         ticketsTotalTextView = (TextView) homeView.findViewById(R.id.tickets_text_view);
+        addCarButton = homeView.findViewById(R.id.add_car_button);
 
         loginPreferences = getActivity().getSharedPreferences("loginPrefs", Context.MODE_PRIVATE);
 
@@ -73,7 +77,14 @@ public class HomeFragment extends Fragment {
         lastLoginTextView.setText("Last login: " + loginDate.toString());
         loadNumberOfParkingTickets();
         loadCarList();
-        //Log.d("CARS_COUNT", String.valueOf(carArrayList.size()));
+
+        addCarButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "Go to Add Car Activity", Toast.LENGTH_SHORT).show();
+            }
+        });
+
 
         recyclerView = homeView.findViewById(R.id.recycler_view);
 
@@ -131,8 +142,6 @@ public class HomeFragment extends Fragment {
             }
         });
     }
-
-
 
     private void showAlertWithMessage(String message) {
         AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();

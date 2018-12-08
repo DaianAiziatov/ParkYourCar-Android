@@ -1,6 +1,7 @@
 package com.lambton.daianaiziatov.parkyourcar;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,7 +10,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.lambton.daianaiziatov.parkyourcar.Models.Car;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -17,10 +23,13 @@ public class CarListAdapter extends RecyclerView.Adapter<CarListAdapter.CarViewH
 
     private ArrayList<Car> carArrayList;
     private Context context;
+    private StorageReference carLogoRef;
 
     public CarListAdapter(ArrayList<Car> carArrayList, Context context) {
         this.carArrayList = carArrayList;
         this.context = context;
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        this.carLogoRef = storage.getReference().child("cars_logos");
     }
 
     @NonNull
@@ -39,12 +48,26 @@ public class CarListAdapter extends RecyclerView.Adapter<CarListAdapter.CarViewH
 
         carViewHolder.carInfoTextView.setText(car.getColor() + " " + car.getManufacturer() + " " + car.getModel());
         carViewHolder.carPlateTextView.setText(car.getPlateNumber());
-        // TODO: Set image
+        setImageFor(car, carViewHolder.carLogoImageView);
     }
 
     @Override
     public int getItemCount() {
         return carArrayList.size();
+    }
+
+    private void setImageFor(Car car, final ImageView imageView) {
+        carLogoRef.child(car.getManufacturer() + ".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Picasso.get().load(uri).into(imageView);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // TODO: Handle error
+            }
+        });
     }
 
     public class CarViewHolder extends RecyclerView.ViewHolder {
