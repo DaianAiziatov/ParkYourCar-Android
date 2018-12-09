@@ -1,13 +1,12 @@
 package com.lambton.daianaiziatov.parkyourcar;
 
-import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -22,6 +21,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.lambton.daianaiziatov.parkyourcar.Models.Car;
 import com.lambton.daianaiziatov.parkyourcar.Models.ParkingTicket;
 
@@ -44,11 +48,17 @@ public class AddNewTicketFragment extends Fragment implements RecyclerViewClickL
     private Spinner paymentSpinner;
     private Button getReceiptButton;
 
+    private FirebaseAuth mAuth;
+    private FirebaseDatabase database;
+    private FirebaseUser user;
+    private DatabaseReference ticketsReference;
+
     private CarListAdapter carListAdapter;
 
     private SharedPreferences loginPreferences;
 
     private ParkingTicket parkingTicket;
+    private Car selectedCar;
     private Integer lastSelectedPosition;
 
     private Date currentDate;
@@ -64,6 +74,12 @@ public class AddNewTicketFragment extends Fragment implements RecyclerViewClickL
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View addNewTicketView =  inflater.inflate(R.layout.fragment_add_new_ticket, container, false);
         parkingTicket = new ParkingTicket();
+
+        // firebase
+        mAuth = FirebaseAuth.getInstance();
+        database = FirebaseDatabase.getInstance();
+        user = mAuth.getCurrentUser();
+        ticketsReference = database.getReference().child("users").child(user.getUid()).child("tickets");
 
         // findByID
         totalTextView = addNewTicketView.findViewById(R.id.total_text_view);
@@ -98,6 +114,7 @@ public class AddNewTicketFragment extends Fragment implements RecyclerViewClickL
         // current date textview
         currentDate = new Date(System.currentTimeMillis());
         dateTextView.setText(dateFormat.format(currentDate));
+        parkingTicket.setDate(dateFormat.format(currentDate));
 
         //spinner setup
         timmmingSpinner.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, ParkingTicket.Timing.values()));
@@ -106,7 +123,7 @@ public class AddNewTicketFragment extends Fragment implements RecyclerViewClickL
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 parkingTicket.setTiming(ParkingTicket.Timing.values()[position]);
                 totalTextView.setText("Total: $" + getTotal(ParkingTicket.Timing.values()[position]));
-                parkingTicket.setPaymentAmount(getTotal(ParkingTicket.Timing.values()[position]));
+                parkingTicket.setTotal(getTotal(ParkingTicket.Timing.values()[position]));
             }
 
             @Override
@@ -118,12 +135,20 @@ public class AddNewTicketFragment extends Fragment implements RecyclerViewClickL
         paymentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                parkingTicket.setPaymentMethod(ParkingTicket.PaymentMethod.values()[position]);
+                parkingTicket.setPayment(ParkingTicket.PaymentMethod.values()[position]);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
+            }
+        });
+
+        // get receipt button setup
+        getReceiptButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getReceipt();
             }
         });
 
@@ -141,9 +166,37 @@ public class AddNewTicketFragment extends Fragment implements RecyclerViewClickL
         return 0.0;
     }
 
+    private void getReceipt() {
+        if (isValid()) {
+            parkingTicket.setUserEmail(emailEditText.getText().toString());
+            parkingTicket.setSlotNumber(parkingSlotEditText.getText().toString());
+            parkingTicket.setSpotNumber(parkingSpotEditText.getText().toString());
+            ticketsReference.push().setValue(parkingTicket, new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                    if (databaseError == null) {
+                        Toast.makeText(getContext(), "Successfully saved!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        showAlertWithMessage(databaseError.getMessage());
+                    }
+                }
+            });
+        } else {
+            showAlertWithMessage("Please fill all fields");
+        }
+    }
+
+    private boolean isValid() {
+        boolean valid = true;
+
+        // validation
+
+        return valid;
+    }
+
     @Override
     public void recyclerViewListClicked(View v, int position) {
-        Car selectedCar = carListAdapter.getCarArrayList().get(position);
+        selectedCar = carListAdapter.getCarArrayList().get(position);
         if (lastSelectedPosition != null) {
             if (lastSelectedPosition == position) {
                 selectedCar.setSelected(false);
@@ -166,10 +219,23 @@ public class AddNewTicketFragment extends Fragment implements RecyclerViewClickL
     private void setCarToTicket(Car car) {
         if (car != null) {
             Log.d("PICKED_CAR", car.toString());
-            parkingTicket.setCarManufacturer(car.getManufacturer());
-            parkingTicket.setCarModel(car.getModel());
-            parkingTicket.setCarColor(car.getColor());
-            parkingTicket.setCarPlate(car.getPlateNumber());
+            parkingTicket.setManufacturer(car.getManufacturer());
+            parkingTicket.setModel(car.getModel());
+            parkingTicket.setColor(car.getColor());
+            parkingTicket.setPlate(car.getPlateNumber());
         }
+    }
+
+    private void showAlertWithMessage(String message) {
+        AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+        alertDialog.setTitle("Alert");
+        alertDialog.setMessage(message);
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
     }
 }

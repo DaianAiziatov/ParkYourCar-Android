@@ -6,27 +6,27 @@ import android.os.Parcelable;
 public class ParkingTicket implements Parcelable {
 
     private String userEmail;
-    private String carPlate;
-    private String carManufacturer;
-    private String carModel;
-    private String carColor;
+    private String plate;
+    private String manufacturer;
+    private String model;
+    private String color;
     private Timing timing;
     private String date;
     private String slotNumber;
     private String spotNumber;
-    private PaymentMethod paymentMethod;
-    private double paymentAmount;
+    private PaymentMethod payment;
+    private double total;
 
     protected ParkingTicket(Parcel in) {
         userEmail = in.readString();
-        carPlate = in.readString();
-        carManufacturer = in.readString();
-        carModel = in.readString();
-        carColor = in.readString();
+        plate = in.readString();
+        manufacturer = in.readString();
+        model = in.readString();
+        color = in.readString();
         date = in.readString();
         slotNumber = in.readString();
         spotNumber = in.readString();
-        paymentAmount = in.readDouble();
+        total = in.readDouble();
     }
 
     public static final Creator<ParkingTicket> CREATOR = new Creator<ParkingTicket>() {
@@ -49,14 +49,14 @@ public class ParkingTicket implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(userEmail);
-        dest.writeString(carPlate);
-        dest.writeString(carManufacturer);
-        dest.writeString(carModel);
-        dest.writeString(carColor);
+        dest.writeString(plate);
+        dest.writeString(manufacturer);
+        dest.writeString(model);
+        dest.writeString(color);
         dest.writeString(date);
         dest.writeString(slotNumber);
         dest.writeString(spotNumber);
-        dest.writeDouble(paymentAmount);
+        dest.writeDouble(total);
     }
 
     public enum Timing {
@@ -93,40 +93,40 @@ public class ParkingTicket implements Parcelable {
     }
 
     public enum PaymentMethod {
-        visaDebit {
+        VISA_DEBIT {
             @Override
             public String toString() {
                 return "Visa Debit";
             }
         },
-        visaCredit {
+        VISA_CREDIT {
             @Override
             public String toString() {
                 return "Visa Credit";
             }
         },
-        masterCard {
+        MASTERCARD {
             @Override
             public String toString() {
                 return "Mastercard";
             }
         },
-        paypal {
+        PAYPAL {
             @Override
             public String toString() {
-                return "Visa Debit";
+                return "PayPal";
             }
         },
-        aliPay {
+        ALI_PAY {
             @Override
             public String toString() {
-                return "AliPay";
+                return "Ali Pay";
             }
         },
-        wechatPay {
+        WECHAT_PAY {
             @Override
             public String toString() {
-                return "WeChatPay";
+                return "WeChat Pay";
             }
         };
     }
@@ -134,18 +134,18 @@ public class ParkingTicket implements Parcelable {
     public ParkingTicket() {
     }
 
-    public ParkingTicket(String userEmail, String carPlate, String carManufacturer, String carModel, String carColor, Timing timing, String date, String slotNumber, String spotNumber, PaymentMethod paymentMethod, double paymentAmount) {
+    public ParkingTicket(String userEmail, String plate, String manufacturer, String model, String color, Timing timing, String date, String slotNumber, String spotNumber, PaymentMethod payment, double total) {
         this.userEmail = userEmail;
-        this.carPlate = carPlate;
-        this.carManufacturer = carManufacturer;
-        this.carModel = carModel;
-        this.carColor = carColor;
+        this.plate = plate;
+        this.manufacturer = manufacturer;
+        this.model = model;
+        this.color = color;
         this.timing = timing;
         this.date = date;
         this.slotNumber = slotNumber;
         this.spotNumber = spotNumber;
-        this.paymentMethod = paymentMethod;
-        this.paymentAmount = paymentAmount;
+        this.payment = payment;
+        this.total = total;
     }
 
     public String getUserEmail() {
@@ -156,40 +156,46 @@ public class ParkingTicket implements Parcelable {
         this.userEmail = userEmail;
     }
 
-    public String getCarPlate() {
-        return carPlate;
+    public String getPlate() {
+        return plate;
     }
 
-    public void setCarPlate(String carPlate) {
-        this.carPlate = carPlate;
+    public void setPlate(String plate) {
+        this.plate = plate;
     }
 
-    public String getCarManufacturer() {
-        return carManufacturer;
+    public String getManufacturer() {
+        return manufacturer;
     }
 
-    public void setCarManufacturer(String carManufacturer) {
-        this.carManufacturer = carManufacturer;
+    public void setManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer;
     }
 
-    public String getCarModel() {
-        return carModel;
+    public String getModel() {
+        return model;
     }
 
-    public void setCarModel(String carModel) {
-        this.carModel = carModel;
+    public void setModel(String model) {
+        this.model = model;
     }
 
-    public String getCarColor() {
-        return carColor;
+    public String getColor() {
+        return color;
     }
 
-    public void setCarColor(String carColor) {
-        this.carColor = carColor;
+    public void setColor(String color) {
+        this.color = color;
     }
 
-    public Timing getTiming() {
-        return timing;
+    public String getTiming() {
+        switch (timing) {
+            case HALF_A_HOUR: return "30 mins";
+            case ONE_HOUR: return "1 hour";
+            case TWO_HOURS: return "2 hours";
+            case THREE_HOURS: return "3 hours";
+            default: return "Day Ends";
+        }
     }
 
     public void setTiming(Timing timing) {
@@ -220,19 +226,27 @@ public class ParkingTicket implements Parcelable {
         this.spotNumber = spotNumber;
     }
 
-    public PaymentMethod getPaymentMethod() {
-        return paymentMethod;
+    public String getPayment() {
+        switch (payment) {
+            case VISA_DEBIT: return "Visa Debit";
+            case VISA_CREDIT: return "Visa Credit";
+            case MASTERCARD: return "Mastercard";
+            case PAYPAL: return "PayPal";
+            case ALI_PAY: return "Ali Pay";
+            default: return "WeChat Pay";
+        }
     }
 
-    public void setPaymentMethod(PaymentMethod paymentMethod) {
-        this.paymentMethod = paymentMethod;
+    public void setPayment(PaymentMethod payment) {
+        this.payment = payment;
     }
 
-    public double getPaymentAmount() {
-        return paymentAmount;
+    public double getTotal() {
+        return total;
     }
 
-    public void setPaymentAmount(double paymentAmount) {
-        this.paymentAmount = paymentAmount;
+    public void setTotal(double total) {
+        this.total = total;
     }
+
 }
