@@ -59,7 +59,7 @@ public class ParkingTicket implements Parcelable {
         dest.writeDouble(paymentAmount);
     }
 
-    enum Timing {
+    public enum Timing {
         HALF_A_HOUR {
             @Override
             public String toString() {
@@ -92,7 +92,7 @@ public class ParkingTicket implements Parcelable {
         };
     }
 
-    enum PaymentMethod {
+    public enum PaymentMethod {
         visaDebit {
             @Override
             public String toString() {

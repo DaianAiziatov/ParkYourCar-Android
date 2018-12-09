@@ -2,6 +2,7 @@ package com.lambton.daianaiziatov.parkyourcar;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -39,14 +40,19 @@ public class CarListAdapter extends RecyclerView.Adapter<CarListAdapter.CarViewH
     private Context context;
     private StorageReference carLogoRef;
 
+    private static RecyclerViewClickListener itemListener;
+
     private FirebaseAuth mAuth;
     private FirebaseDatabase database;
     private FirebaseUser user;
     private DatabaseReference carsReference;
 
-    public CarListAdapter(Context context) {
+    private Car car;
+
+    public CarListAdapter(Context context, RecyclerViewClickListener itemListener) {
         this.carArrayList = new ArrayList<>();
         this.context = context;
+        this.itemListener = itemListener;
         FirebaseStorage storage = FirebaseStorage.getInstance();
         this.carLogoRef = storage.getReference().child("cars_logos");
         this.mAuth = FirebaseAuth.getInstance();
@@ -67,13 +73,12 @@ public class CarListAdapter extends RecyclerView.Adapter<CarListAdapter.CarViewH
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CarViewHolder carViewHolder, final int position) {
-        Car car = carArrayList.get(position);
+    public void onBindViewHolder(@NonNull final CarViewHolder carViewHolder, final int position) {
+        car = carArrayList.get(position);
 
         carViewHolder.carInfoTextView.setText(car.getColor() + " " + car.getManufacturer() + " " + car.getModel());
         carViewHolder.carPlateTextView.setText(car.getPlateNumber());
         setImageFor(car, carViewHolder.carLogoImageView);
-
         carViewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -82,18 +87,20 @@ public class CarListAdapter extends RecyclerView.Adapter<CarListAdapter.CarViewH
             }
         });
 
-        carViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                v.setSelected(true);
-                v.setBackgroundColor(0xFF00FF00);
-            }
-        });
+        if (car.isSelected()) {
+            carViewHolder.itemView.setBackgroundColor(Color.parseColor("#dae2ef"));
+        } else {
+            carViewHolder.itemView.setBackgroundColor(Color.parseColor("#ffffff"));
+        }
     }
 
     @Override
     public int getItemCount() {
         return carArrayList.size();
+    }
+
+    public ArrayList<Car> getCarArrayList() {
+        return carArrayList;
     }
 
     private void setImageFor(Car car, final ImageView imageView) {
@@ -188,7 +195,7 @@ public class CarListAdapter extends RecyclerView.Adapter<CarListAdapter.CarViewH
         alertDialog.show();
     }
 
-    public class CarViewHolder extends RecyclerView.ViewHolder {
+    public class CarViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         ImageView carLogoImageView;
         TextView carInfoTextView;
@@ -200,6 +207,16 @@ public class CarListAdapter extends RecyclerView.Adapter<CarListAdapter.CarViewH
             carLogoImageView = itemView.findViewById(R.id.car_logo_image_view);
             carInfoTextView = itemView.findViewById(R.id.car_info_text_view);
             carPlateTextView = itemView.findViewById(R.id.car_plate_text_view);
+            itemView.setOnClickListener(this);
+
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (itemListener != null) {
+                itemListener.recyclerViewListClicked(v, this.getLayoutPosition());
+                notifyDataSetChanged();
+            }
         }
     }
 }

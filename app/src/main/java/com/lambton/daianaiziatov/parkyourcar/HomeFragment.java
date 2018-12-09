@@ -88,7 +88,7 @@ public class HomeFragment extends Fragment {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(homeView.getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        carListAdapter = new CarListAdapter(homeView.getContext());
+        carListAdapter = new CarListAdapter(homeView.getContext(), null);
         recyclerView.setAdapter(carListAdapter);
 
         return homeView;

@@ -7,6 +7,7 @@ public class Car {
     private String model;
     private String plateNumber;
     private String color;
+    private boolean isSelected;
 
     public Car(String carId, String manufacturer, String model, String plateNumber, String color) {
         this.carId = carId;
@@ -14,9 +15,18 @@ public class Car {
         this.model = model;
         this.plateNumber = plateNumber;
         this.color = color;
+        this.isSelected = false;
     }
 
     public Car() {
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
     }
 
     public String getCarId() {
