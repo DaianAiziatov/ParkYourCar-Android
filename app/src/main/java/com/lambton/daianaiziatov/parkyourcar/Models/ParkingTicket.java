@@ -23,9 +23,11 @@ public class ParkingTicket implements Parcelable {
         manufacturer = in.readString();
         model = in.readString();
         color = in.readString();
+        setTiming(in.readString());
         date = in.readString();
         slotNumber = in.readString();
         spotNumber = in.readString();
+        setPayment(in.readString());
         total = in.readDouble();
     }
 
@@ -53,9 +55,11 @@ public class ParkingTicket implements Parcelable {
         dest.writeString(manufacturer);
         dest.writeString(model);
         dest.writeString(color);
+        dest.writeString(timing.toString());
         dest.writeString(date);
         dest.writeString(slotNumber);
         dest.writeString(spotNumber);
+        dest.writeString(payment.toString());
         dest.writeDouble(total);
     }
 
@@ -198,8 +202,19 @@ public class ParkingTicket implements Parcelable {
         }
     }
 
-    public void setTiming(Timing timing) {
-        this.timing = timing;
+    public void setTiming(String timing) {
+        switch (timing) {
+            case "30 mins": this.timing = Timing.HALF_A_HOUR;
+                break;
+            case "1 hour": this.timing = Timing.ONE_HOUR;
+                break;
+            case "2 hours": this.timing = Timing.TWO_HOURS;
+                break;
+            case "3 hours": this.timing = Timing.THREE_HOURS;
+                break;
+            default: this.timing = Timing.DAY_ENDS;
+                break;
+        }
     }
 
     public String getDate() {
@@ -237,8 +252,21 @@ public class ParkingTicket implements Parcelable {
         }
     }
 
-    public void setPayment(PaymentMethod payment) {
-        this.payment = payment;
+    public void setPayment(String payment) {
+        switch (payment) {
+            case "Visa Debit": this.payment = PaymentMethod.VISA_DEBIT;
+                break;
+            case "Visa Credit": this.payment = PaymentMethod.VISA_CREDIT;
+                break;
+            case "Mastercard": this.payment = PaymentMethod.MASTERCARD;
+                break;
+            case "PayPal": this.payment = PaymentMethod.PAYPAL;
+                break;
+            case "Ali Pay": this.payment = PaymentMethod.ALI_PAY;
+                break;
+            default: this.payment = PaymentMethod.WECHAT_PAY;
+                break;
+        }
     }
 
     public double getTotal() {

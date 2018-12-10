@@ -1,6 +1,7 @@
 package com.lambton.daianaiziatov.parkyourcar;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -125,7 +126,7 @@ public class AddNewTicketFragment extends Fragment implements RecyclerViewClickL
         timmmingSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                parkingTicket.setTiming(ParkingTicket.Timing.values()[position]);
+                parkingTicket.setTiming(ParkingTicket.Timing.values()[position].toString());
                 totalTextView.setText("Total: $" + getTotal(ParkingTicket.Timing.values()[position]));
                 parkingTicket.setTotal(getTotal(ParkingTicket.Timing.values()[position]));
             }
@@ -139,7 +140,7 @@ public class AddNewTicketFragment extends Fragment implements RecyclerViewClickL
         paymentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                parkingTicket.setPayment(ParkingTicket.PaymentMethod.values()[position]);
+                parkingTicket.setPayment(ParkingTicket.PaymentMethod.values()[position].toString());
             }
 
             @Override
@@ -179,7 +180,9 @@ public class AddNewTicketFragment extends Fragment implements RecyclerViewClickL
                 @Override
                 public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
                     if (databaseError == null) {
-                        Toast.makeText(getContext(), "Successfully saved!", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getContext(), ReceiptActivity.class);
+                        intent.putExtra("ticket", parkingTicket);
+                        getActivity().startActivity(intent);
                     } else {
                         showAlertWithMessage(databaseError.getMessage());
                     }

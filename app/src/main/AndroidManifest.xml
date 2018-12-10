@@ -21,10 +21,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".HomeActivity"
-            android:label="@string/home"
-            android:theme="@style/AppTheme" />
-        <activity
             android:name=".SignupActivity"
             android:label="@string/signup"
             android:parentActivityName=".LoginActivity"
@@ -32,7 +28,12 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ReceiptActivity"
+            android:label="Receipt"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.ActionBar"/>
     </application>
 
 </manifest>

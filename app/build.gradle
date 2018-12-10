@@ -34,4 +34,5 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage:16.0.5'
 
     implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'com.github.beigirad:ZigzagView:1.0.6'
 }
