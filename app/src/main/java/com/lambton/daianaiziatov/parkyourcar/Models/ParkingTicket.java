@@ -100,37 +100,37 @@ public class ParkingTicket implements Parcelable {
         VISA_DEBIT {
             @Override
             public String toString() {
-                return "Visa_Debit";
+                return "visa_debit";
             }
         },
         VISA_CREDIT {
             @Override
             public String toString() {
-                return "Visa_Credit";
+                return "visa_credit";
             }
         },
         MASTERCARD {
             @Override
             public String toString() {
-                return "Mastercard";
+                return "mastercard";
             }
         },
         PAYPAL {
             @Override
             public String toString() {
-                return "PayPal";
+                return "paypal";
             }
         },
         ALI_PAY {
             @Override
             public String toString() {
-                return "Ali_Pay";
+                return "ali_pay";
             }
         },
         WECHAT_PAY {
             @Override
             public String toString() {
-                return "WeChat_Pay";
+                return "wechat_pay";
             }
         };
     }
@@ -243,26 +243,26 @@ public class ParkingTicket implements Parcelable {
 
     public String getPayment() {
         switch (payment) {
-            case VISA_DEBIT: return "Visa_Debit";
-            case VISA_CREDIT: return "Visa_Credit";
+            case VISA_DEBIT: return "Visa Debit";
+            case VISA_CREDIT: return "Visa Credit";
             case MASTERCARD: return "Mastercard";
             case PAYPAL: return "PayPal";
-            case ALI_PAY: return "Ali_Pay";
-            default: return "WeChat_Pay";
+            case ALI_PAY: return "Ali Pay";
+            default: return "WeChat Pay";
         }
     }
 
     public void setPayment(String payment) {
         switch (payment) {
-            case "Visa_Debit": this.payment = PaymentMethod.VISA_DEBIT;
+            case "Visa Debit": this.payment = PaymentMethod.VISA_DEBIT;
                 break;
-            case "Visa_Credit": this.payment = PaymentMethod.VISA_CREDIT;
+            case "Visa Credit": this.payment = PaymentMethod.VISA_CREDIT;
                 break;
             case "Mastercard": this.payment = PaymentMethod.MASTERCARD;
                 break;
             case "PayPal": this.payment = PaymentMethod.PAYPAL;
                 break;
-            case "Ali_Pay": this.payment = PaymentMethod.ALI_PAY;
+            case "Ali Pay": this.payment = PaymentMethod.ALI_PAY;
                 break;
             default: this.payment = PaymentMethod.WECHAT_PAY;
                 break;

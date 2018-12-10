@@ -55,7 +55,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
 
-        fragmentTransaction.add(R.id.container, new HomeFragment(),"fragment_home");
+        if (getIntent().getBooleanExtra("fromReport", false)) {
+            fragmentTransaction.add(R.id.container, new ReportFragment(),"fragment_report");
+        } else  {
+            fragmentTransaction.add(R.id.container, new HomeFragment(),"fragment_home");
+        }
         fragmentTransaction.commit();
         setTitle("Home");
     }
@@ -103,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             fragmentTransaction.replace(R.id.container, new HomeFragment(),"fragment_home");
             setTitle("Home");
         } else if (id == R.id.nav_report) {
+            fragmentTransaction.replace(R.id.container, new ReportFragment(),"fragment_report");
             setTitle("Report");
         } else if (id == R.id.nav_add_ticket) {
             fragmentTransaction.replace(R.id.container, new AddNewTicketFragment(),"fragment_add_new_ticket");

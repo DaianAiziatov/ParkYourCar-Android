@@ -24,12 +24,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.lambton.daianaiziatov.parkyourcar.Models.Car;
 import com.lambton.daianaiziatov.parkyourcar.Models.ParkingTicket;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.TicketViewHolder> {
 
@@ -44,9 +42,12 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Ti
 
     private ParkingTicket parkingTicket;
 
+    private static RecyclerViewClickListener itemListener;
 
-    public TicketListAdapter(Context context) {
+
+    public TicketListAdapter(Context context, RecyclerViewClickListener itemListener) {
         this.context = context;
+        this.itemListener = itemListener;
         this.ticketArrayList = new ArrayList<>();
         FirebaseStorage storage = FirebaseStorage.getInstance();
         this.carLogoRef = storage.getReference().child("cars_logos");
@@ -55,6 +56,10 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Ti
         this.user = mAuth.getCurrentUser();
         this.ticketsReference = database.getReference().child("users").child(user.getUid()).child("tickets");
         loadTicketList();
+    }
+
+    public ArrayList<ParkingTicket> getTicketArrayList() {
+        return ticketArrayList;
     }
 
     @NonNull
@@ -92,7 +97,7 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Ti
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot data: dataSnapshot.getChildren()) {
-                    final ParkingTicket ticket = (ParkingTicket) data.getValue();
+                    final ParkingTicket ticket = data.getValue(ParkingTicket.class);
                     Log.d("TICKET_ADDED", ticket.toString());
                     ticketArrayList.add(ticket);
                 }
@@ -123,17 +128,17 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Ti
 
     private void setImageForPayment(String payment, final ImageView imageView) {
         switch (payment) {
-            case "Ali Pay": imageView.setImageResource(R.drawable.Ali_Pay);
+            case "Ali Pay": imageView.setImageResource(R.drawable.ali_pay);
                 break;
-            case "Mastercard": imageView.setImageResource(R.drawable.Mastercard);
+            case "Mastercard": imageView.setImageResource(R.drawable.mastercard);
                 break;
-            case "PayPal": imageView.setImageResource(R.drawable.PayPal);
+            case "PayPal": imageView.setImageResource(R.drawable.paypal);
                 break;
-            case "Visa Credit": imageView.setImageResource(R.drawable.Visa_Credit);
+            case "Visa Credit": imageView.setImageResource(R.drawable.visa_credit);
                 break;
-            case "Visa Debit": imageView.setImageResource(R.drawable.Visa_Debit);
+            case "Visa Debit": imageView.setImageResource(R.drawable.visa_debit);
                 break;
-            case "WeChat_Pay": imageView.setImageResource(R.drawable.WeChat_Pay);
+            case "WeChat Pay": imageView.setImageResource(R.drawable.wechat_pay);
                 break;
         }
 
@@ -153,7 +158,7 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Ti
         alertDialog.show();
     }
 
-    public class TicketViewHolder extends RecyclerView.ViewHolder {
+    public class TicketViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         ImageView carLogoImageView;
         TextView carInfoTextView;
@@ -177,7 +182,14 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Ti
             paymentImageView = itemView.findViewById(R.id.payment_image_view);
             totalTextView = itemView.findViewById(R.id.total_text_view);
             dateTextView = itemView.findViewById(R.id.date_text_view);
+
+            itemView.setOnClickListener(this);
         }
 
+        @Override
+        public void onClick(View v) {
+            itemListener.recyclerViewListClicked(v, this.getLayoutPosition());
+            notifyDataSetChanged();
+        }
     }
 }
