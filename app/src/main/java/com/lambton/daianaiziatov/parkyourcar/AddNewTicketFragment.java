@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +33,8 @@ import com.lambton.daianaiziatov.parkyourcar.Models.ParkingTicket;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -63,6 +66,7 @@ public class AddNewTicketFragment extends Fragment implements RecyclerViewClickL
 
     private Date currentDate;
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private String alertMessage = "";
 
 
     public AddNewTicketFragment() {
@@ -182,14 +186,55 @@ public class AddNewTicketFragment extends Fragment implements RecyclerViewClickL
                 }
             });
         } else {
-            showAlertWithMessage("Please fill all fields");
+            showAlertWithMessage(alertMessage);
+            alertMessage = "";
         }
     }
 
     private boolean isValid() {
         boolean valid = true;
+        Pattern regexp;
+        Matcher matcher;
 
-        // validation
+        String email = emailEditText.getText().toString();
+        if (TextUtils.isEmpty(email)) {
+            emailEditText.setError("Required.");
+            alertMessage += "\n-Email is required.";
+            valid = false;
+        } else {
+            emailEditText.setError(null);
+            regexp = Pattern.compile("^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$");
+            matcher = regexp.matcher(email);
+            boolean result = matcher.matches();
+            if (!result) {
+                valid = false;
+                emailEditText.setError("Invalid email format");
+                alertMessage += "\n-Invalid email format.";
+            }
+        }
+
+        if (selectedCar == null || !selectedCar.isSelected()) {
+            alertMessage += "\n-Please select any car or add new.";
+            valid = false;
+        }
+
+        String spot = parkingSpotEditText.getText().toString();
+        if (TextUtils.isEmpty(spot)) {
+            parkingSpotEditText.setError("Required.");
+            alertMessage += "\n-Spot is required.";
+            valid = false;
+        } else {
+            parkingSpotEditText.setError(null);
+        }
+
+        String slot = parkingSlotEditText.getText().toString();
+        if (TextUtils.isEmpty(slot)) {
+            parkingSlotEditText.setError("Required.");
+            alertMessage += "\n-Slot is required.";
+            valid = false;
+        } else {
+            parkingSlotEditText.setError(null);
+        }
 
         return valid;
     }
