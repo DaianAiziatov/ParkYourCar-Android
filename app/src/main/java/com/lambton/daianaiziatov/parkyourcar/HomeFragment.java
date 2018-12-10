@@ -45,7 +45,6 @@ public class HomeFragment extends Fragment {
     private FirebaseUser user;
     private int numberOfTickets;
 
-    private ArrayList<Car> carArrayList;
     private CarListAdapter carListAdapter;
 
     public HomeFragment() {
@@ -69,14 +68,12 @@ public class HomeFragment extends Fragment {
         database = FirebaseDatabase.getInstance();
         user = mAuth.getCurrentUser();
 
-        carArrayList = new ArrayList<>();
 
         emailTextView.setText("User email: " + user.getEmail());
         long dateInMS = loginPreferences.getLong("logDate", 0);
         Date loginDate = new Date(dateInMS);
         lastLoginTextView.setText("Last login: " + loginDate.toString());
         loadNumberOfParkingTickets();
-        loadCarList();
 
         addCarButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,41 +88,12 @@ public class HomeFragment extends Fragment {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(homeView.getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        carListAdapter = new CarListAdapter(carArrayList, homeView.getContext());
+        carListAdapter = new CarListAdapter(homeView.getContext(), null);
         recyclerView.setAdapter(carListAdapter);
 
         return homeView;
     }
 
-    private void loadCarList() {
-        Log.d("INSIDELOADCAR", "true");
-        DatabaseReference ticketsReference = database.getReference().child("users").child(user.getUid()).child("cars");
-        ticketsReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d("DATASNAPSHOT", dataSnapshot.toString());
-                for (DataSnapshot data: dataSnapshot.getChildren()) {
-                    final Map<String, String> value = (Map<String, String>) data.getValue();
-                    final String id = data.getKey();
-                    final String model = value.get("model");
-                    final String color = value.get("color");
-                    final String manufacturer = value.get("manufacturer");
-                    final String plate = value.get("plate");
-                    final Car car = new Car(id, manufacturer, model, plate, color);
-                    Log.d("CARS_ADDED", car.toString());
-                    carArrayList.add(car);
-                }
-                Log.d("CARS_COUNT", String.valueOf(carArrayList.size()));
-                carListAdapter.notifyDataSetChanged();
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                showAlertWithMessage(error.getMessage());
-            }
-        });
-    }
 
     private void loadNumberOfParkingTickets() {
         DatabaseReference ticketsReference = database.getReference().child("users").child(user.getUid()).child("tickets");
@@ -142,6 +110,7 @@ public class HomeFragment extends Fragment {
             }
         });
     }
+
 
     private void showAlertWithMessage(String message) {
         AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();

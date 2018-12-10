@@ -19,6 +19,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.lambton.daianaiziatov.parkyourcar.Models.User;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class SignupActivity extends AppCompatActivity {
 
     private EditText firstNameEditText;
@@ -35,6 +38,8 @@ public class SignupActivity extends AppCompatActivity {
     private String contactNumber;
 
     private FirebaseAuth mAuth;
+
+    private String alertMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +78,7 @@ public class SignupActivity extends AppCompatActivity {
                 showAlertWithMessage("Please check passwords fields");
             }
         } else {
-            showAlertWithMessage("Please fill all fields.");
+            showAlertWithMessage(alertMessage);
         }
     }
 
@@ -93,29 +98,58 @@ public class SignupActivity extends AppCompatActivity {
 
     private boolean areAllFieldsFilled() {
         boolean valid = true;
+        Pattern regexp;
+        Matcher matcher;
 
         String firstName = firstNameEditText.getText().toString();
         if (TextUtils.isEmpty(firstName)) {
             firstNameEditText.setError("Required.");
+            alertMessage += "\n-Name is required.";
             valid = false;
         } else {
             firstNameEditText.setError(null);
+            regexp = Pattern.compile("^(?![\\s.]+$)[a-zA-Z\\s.]*$");
+            matcher = regexp.matcher(firstName);
+            boolean result = matcher.matches();
+            if (!result) {
+                valid = false;
+                firstNameEditText.setError("Only alphabets and spaces.");
+                alertMessage += "\n-First name must include only alphabets and spaces.";
+            }
         }
 
         String lastName = lastNameEditText.getText().toString();
         if (TextUtils.isEmpty(lastName)) {
             lastNameEditText.setError("Required.");
+            alertMessage += "\n-Name is required.";
             valid = false;
         } else {
             lastNameEditText.setError(null);
+            regexp = Pattern.compile("^(?![\\s.]+$)[a-zA-Z\\s.]*$");
+            matcher = regexp.matcher(lastName);
+            boolean result = matcher.matches();
+            if (!result) {
+                valid = false;
+                lastNameEditText.setError("Only alphabets and spaces.");
+                alertMessage += "\n-Last name must include only alphabets and spaces.";
+            }
         }
 
         String email = emailEditText.getText().toString();
         if (TextUtils.isEmpty(email)) {
             emailEditText.setError("Required.");
+            alertMessage += "\n-Email is required.";
             valid = false;
         } else {
             emailEditText.setError(null);
+            regexp = Pattern.compile("^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$");
+            matcher = regexp.matcher(email);
+            boolean result = matcher.matches();
+            if (!result) {
+                valid = false;
+                emailEditText.setError("Invalid email format");
+                alertMessage += "\n-Invalid email format.";
+            }
         }
 
         String number = numberEditText.getText().toString();

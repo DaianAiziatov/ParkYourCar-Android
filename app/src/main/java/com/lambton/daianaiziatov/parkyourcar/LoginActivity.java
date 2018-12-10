@@ -67,11 +67,11 @@ public class LoginActivity extends AppCompatActivity {
                                 // Sign in success, update UI with the signed-in user's information
                                 if (rememberMeSwitch.isChecked()) {
                                     loginPrefsEditor.putBoolean("saveLogin", true);
-                                    loginPrefsEditor.putString("email", userEmail);
                                     loginPrefsEditor.putString("password", password);
                                 } else {
                                     loginPrefsEditor.clear();
                                 }
+                                loginPrefsEditor.putString("email", userEmail);
                                 loginPrefsEditor.putLong("logDate", System.currentTimeMillis());
                                 loginPrefsEditor.commit();
                                 goToActivity(MainActivity.class);

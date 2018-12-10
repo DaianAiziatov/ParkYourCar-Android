@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_report) {
             setTitle("Report");
         } else if (id == R.id.nav_add_ticket) {
+            fragmentTransaction.replace(R.id.container, new AddNewTicketFragment(),"fragment_add_new_ticket");
             setTitle("New Ticket");
         } else if (id == R.id.nav_location) {
             setTitle("Location");
@@ -118,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mAuth.signOut();
             goToActivity(LoginActivity.class);
         }
+        fragmentTransaction.commit();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
