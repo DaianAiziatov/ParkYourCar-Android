@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#dae2ef"
+    android:padding="16dp">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ffffff">
+
+        <ImageView
+            android:id="@+id/car_logo_image_view"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"/>
+
+        <TextView
+            android:id="@+id/car_info_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="car info"
+            android:textColor="#000000"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/car_logo_image_view"/>
+
+        <TextView
+            android:id="@+id/car_plate_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="plate"
+            android:textColor="#000000"
+            app:layout_constraintTop_toBottomOf="@+id/car_info_text_view"
+            app:layout_constraintLeft_toRightOf="@+id/car_logo_image_view"/>
+
+        <LinearLayout
+            android:id="@+id/linear_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/car_logo_image_view"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <TextView
+                android:id="@+id/timing_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="timming"
+                android:layout_weight="1"
+                android:textColor="#000000"/>
+
+            <TextView
+                android:id="@+id/spot_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Spot: "
+                android:layout_weight="1"
+                android:textColor="#000000"/>
+
+            <TextView
+                android:id="@+id/slot_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Slot: "
+                android:layout_weight="1"
+                android:textColor="#000000"/>
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/payment_image_view"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintTop_toBottomOf="@+id/linear_layout"
+            app:layout_constraintLeft_toLeftOf="parent"/>
+
+        <TextView
+            android:id="@+id/total_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="total"
+            android:textColor="#000000"
+            app:layout_constraintTop_toBottomOf="@+id/linear_layout"
+            app:layout_constraintLeft_toRightOf="@+id/payment_image_view"/>
+
+        <TextView
+            android:id="@+id/date_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="date"
+            android:textColor="#000000"
+            app:layout_constraintTop_toBottomOf="@+id/linear_layout"
+            app:layout_constraintRight_toRightOf="parent"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.constraint.ConstraintLayout>
