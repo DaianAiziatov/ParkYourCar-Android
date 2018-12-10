@@ -100,37 +100,37 @@ public class ParkingTicket implements Parcelable {
         VISA_DEBIT {
             @Override
             public String toString() {
-                return "Visa Debit";
+                return "visa_debit";
             }
         },
         VISA_CREDIT {
             @Override
             public String toString() {
-                return "Visa Credit";
+                return "visa_credit";
             }
         },
         MASTERCARD {
             @Override
             public String toString() {
-                return "Mastercard";
+                return "mastercard";
             }
         },
         PAYPAL {
             @Override
             public String toString() {
-                return "PayPal";
+                return "paypal";
             }
         },
         ALI_PAY {
             @Override
             public String toString() {
-                return "Ali Pay";
+                return "ali_pay";
             }
         },
         WECHAT_PAY {
             @Override
             public String toString() {
-                return "WeChat Pay";
+                return "wechat_pay";
             }
         };
     }

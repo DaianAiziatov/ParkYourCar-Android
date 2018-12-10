@@ -1,9 +1,12 @@
 package com.lambton.daianaiziatov.parkyourcar;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -51,11 +54,34 @@ public class ReceiptActivity extends AppCompatActivity {
         plateTextView = findViewById(R.id.plate_text_view);
         plateTextView.setText(parkingTicket.getPlate());
         paymentTextView = findViewById(R.id.payment_text_view);
-        paymentTextView.setText(parkingTicket.getPayment());
+        paymentTextView.setText("Payment method: " + parkingTicket.getPayment());
         totalTextView = findViewById(R.id.total_text_view);
         totalTextView.setText("Total: $" + parkingTicket.getTotal());
         carLogoImageView = findViewById(R.id.car_logo_image_view);
         setImageFor(parkingTicket.getManufacturer(), carLogoImageView);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.d("CDA", "onBackPressed Called");
+        Intent intent = new Intent(this, MainActivity.class);
+        boolean fromReport = getIntent().getBooleanExtra("fromReport", false);
+        intent.putExtra("fromReport", fromReport);
+        this.startActivity(intent);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Log.d("CDA", "onBackPressed Called");
+                Intent intent = new Intent(this, MainActivity.class);
+                boolean fromReport = getIntent().getBooleanExtra("fromReport", false);
+                intent.putExtra("fromReport", fromReport);
+                this.startActivity(intent);
+                break;
+        }
+        return true;
     }
 
     private void setImageFor(String brand, final ImageView imageView) {
