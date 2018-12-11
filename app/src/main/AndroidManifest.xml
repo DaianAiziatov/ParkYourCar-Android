@@ -33,6 +33,11 @@
             android:name=".ReceiptActivity"
             android:label="Receipt"
             android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.ActionBar" />
+        <activity
+            android:name=".AddCarActivity"
+            android:label="Add New Car"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.ActionBar"/>
     </application>
 
