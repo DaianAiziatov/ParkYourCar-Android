@@ -1,11 +1,14 @@
 package com.lambton.daianaiziatov.parkyourcar;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -15,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -31,15 +35,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -76,28 +71,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -124,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             fragmentTransaction.replace(R.id.container, new InstructionFragment(),"fragment_instruction");
             setTitle("Instruction");
         } else if (id == R.id.nav_contact) {
-
+            contactUs();
         } else if (id == R.id.nav_logout) {
             mAuth.signOut();
             goToActivity(LoginActivity.class);
@@ -139,5 +112,95 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void goToActivity(Class<?> className) {
         Intent intent = new Intent(this, className);
         this.startActivity(intent);
+    }
+
+    private void contactUs() {
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setTitle("Contact us.");
+        alertDialog.setMessage("Need any help? Contact us by:");
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "CALL",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        makeCall();
+                    }
+                });
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "EMAIL",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        sendEmail();
+                    }
+                });
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "SMS",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        sendSMS();
+                    }
+                });
+        alertDialog.show();
+    }
+
+    private void sendSMS() {
+        String message = "My question is:";
+        String phoneNo = "+12345678900";
+        Intent smsIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:" + phoneNo));
+        smsIntent.putExtra("sms_body", message);
+        if(smsIntent.resolveActivity(this.getPackageManager()) != null)
+        {
+            startActivity(smsIntent);
+        }
+        else
+        {
+            showAlertWithMessage("No application to handle SMS");
+        }
+    }
+
+    private void sendEmail() {
+        String to = "parking@lambton.com";
+        String subject = "To parking department";
+        String body = "My question is: \n";
+
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+        emailIntent.setType("text/plain");
+        emailIntent.setData(Uri.parse("mailto:" + to));
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{ to});
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        emailIntent.putExtra(Intent.EXTRA_TEXT, body);
+        emailIntent.setType("message/rfc822");
+
+        if(emailIntent.resolveActivity(this.getPackageManager()) != null)
+        {
+            startActivity(Intent.createChooser(emailIntent, "Select Email Client"));
+        }
+        else
+        {
+            showAlertWithMessage("No application to handle Email");
+        }
+    }
+
+    private void makeCall() {
+        String phoneNo = "+12345678900";
+        String dial = "tel:" + phoneNo;
+        Intent phoneItent = new Intent(Intent.ACTION_DIAL, Uri.parse(dial));
+        if(phoneItent.resolveActivity(this.getPackageManager()) != null)
+        {
+            startActivity(phoneItent);
+        }
+        else
+        {
+            showAlertWithMessage("No application to handle Phone call");
+        }
+    }
+
+    private void showAlertWithMessage(String message) {
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setTitle("Alert");
+        alertDialog.setMessage(message);
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
     }
 }
