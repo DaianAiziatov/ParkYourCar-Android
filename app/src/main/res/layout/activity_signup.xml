@@ -43,7 +43,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/contact_number"
-        android:inputType="number"
+        android:inputType="phone"
         app:layout_constraintTop_toBottomOf="@id/user_email_edit_view"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>

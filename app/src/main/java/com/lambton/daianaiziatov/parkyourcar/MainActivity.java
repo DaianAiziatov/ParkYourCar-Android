@@ -117,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_location) {
             setTitle("Location");
         } else if (id == R.id.nav_update_profile) {
+            fragmentTransaction.replace(R.id.container, new UpdateProfileFragment(),"fragment_update_profile");
             setTitle("Update Profile");
         } else if (id == R.id.nav_instruction) {
             setTitle("Instruction");
