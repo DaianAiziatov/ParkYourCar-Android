@@ -14,9 +14,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -96,12 +99,34 @@ public class AddCarActivity extends AppCompatActivity {
         addCarButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("CAR", car.toString());
+                saveCarToFirebase();
             }
         });
 
         modelSpinner.setAdapter(new ArrayAdapter<>(AddCarActivity.this, android.R.layout.simple_spinner_item, models));
 
+    }
+
+    private void saveCarToFirebase() {
+        Map<String, String> data = new HashMap<>();
+        data.put("manufacturer", car.getManufacturer());
+        data.put("model", car.getModel());
+        data.put("color", car.getColor());
+        data.put("plate", plateEditText.getText().toString());
+        carReference.push().setValue(data).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    goBack();
+                } else {
+                    showAlertWithMessage("Error occurred while creating new car.\nPlease try again.");
+                }
+            }
+        });
+    }
+
+    private void goBack() {
+        Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
     }
 
     private void setImageFor(String brand) {
