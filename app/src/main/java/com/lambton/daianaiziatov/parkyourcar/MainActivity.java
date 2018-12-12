@@ -1,11 +1,14 @@
 package com.lambton.daianaiziatov.parkyourcar;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -15,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -124,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             fragmentTransaction.replace(R.id.container, new InstructionFragment(),"fragment_instruction");
             setTitle("Instruction");
         } else if (id == R.id.nav_contact) {
-
+            contactUs();
         } else if (id == R.id.nav_logout) {
             mAuth.signOut();
             goToActivity(LoginActivity.class);
@@ -139,5 +143,76 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void goToActivity(Class<?> className) {
         Intent intent = new Intent(this, className);
         this.startActivity(intent);
+    }
+
+    private void contactUs() {
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setTitle("Contact us.");
+        alertDialog.setMessage("Need any help? Contact us by:");
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "CALL",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        sendEmail();
+                    }
+                });
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "EMAIL",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        makeCall();
+                    }
+                });
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "SMS",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        sendSMS();
+                    }
+                });
+        alertDialog.show();
+    }
+
+    private void sendSMS() {
+        String message = "My question is:";
+        String phoneNo = "+12345678900";
+        Intent smsIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:" + phoneNo));
+        smsIntent.putExtra("sms_body", message);
+        if(smsIntent.resolveActivity(this.getPackageManager()) != null)
+        {
+            startActivity(smsIntent);
+        }
+        else
+        {
+            showAlertWithMessage("No application to handle SMS");
+        }
+    }
+
+    private void sendEmail() {
+        String email = "parking@lambton.com";
+    }
+
+    private void makeCall() {
+        String phoneNo = "+12345678900";
+        String dial = "tel:" + phoneNo;
+        Intent phoneItent = new Intent(Intent.ACTION_DIAL, Uri.parse(dial));
+        if(phoneItent.resolveActivity(this.getPackageManager()) != null)
+        {
+            startActivity(phoneItent);
+        }
+        else
+        {
+            showAlertWithMessage("No application to handle Phone call");
+        }
+    }
+
+    private void showAlertWithMessage(String message) {
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setTitle("Alert");
+        alertDialog.setMessage(message);
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
     }
 }
