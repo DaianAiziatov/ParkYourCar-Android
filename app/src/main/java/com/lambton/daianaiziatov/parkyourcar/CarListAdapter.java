@@ -119,7 +119,7 @@ public class CarListAdapter extends RecyclerView.Adapter<CarListAdapter.CarViewH
 
     private void deleteCar(final int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("Delete country this car?");
+        builder.setTitle("Delete this car?");
 
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override

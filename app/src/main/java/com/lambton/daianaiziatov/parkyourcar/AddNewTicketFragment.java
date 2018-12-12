@@ -33,6 +33,7 @@ import com.lambton.daianaiziatov.parkyourcar.Models.ParkingTicket;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -101,7 +102,9 @@ public class AddNewTicketFragment extends Fragment implements RecyclerViewClickL
         addCarButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "Go to Add Car Activity", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getContext(), AddCarActivity.class);
+                intent.putExtra("fromAddNewTicket", true);
+                getActivity().startActivity(intent);
             }
         });
 
@@ -122,7 +125,8 @@ public class AddNewTicketFragment extends Fragment implements RecyclerViewClickL
         parkingTicket.setDate(dateFormat.format(currentDate));
 
         //spinner setup
-        timmmingSpinner.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, ParkingTicket.Timing.values()));
+        ArrayAdapter<ParkingTicket.Timing> timingAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, ParkingTicket.Timing.values());
+        timmmingSpinner.setAdapter(timingAdapter);
         timmmingSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
