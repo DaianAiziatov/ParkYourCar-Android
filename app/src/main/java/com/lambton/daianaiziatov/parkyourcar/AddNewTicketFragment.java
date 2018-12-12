@@ -102,7 +102,9 @@ public class AddNewTicketFragment extends Fragment implements RecyclerViewClickL
         addCarButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "Go to Add Car Activity", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getContext(), AddCarActivity.class);
+                intent.putExtra("fromAddNewTicket", true);
+                getActivity().startActivity(intent);
             }
         });
 
