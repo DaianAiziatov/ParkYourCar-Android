@@ -1,12 +1,15 @@
 package com.lambton.daianaiziatov.parkyourcar;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -37,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class AddCarActivity extends AppCompatActivity {
 
@@ -61,6 +65,8 @@ public class AddCarActivity extends AppCompatActivity {
     private ArrayList<String> colors;
 
     private Car car;
+
+    private String alertMessage = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,12 +105,36 @@ public class AddCarActivity extends AppCompatActivity {
         addCarButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveCarToFirebase();
+                if (isValid()) {
+                    saveCarToFirebase();
+                } else {
+                    showAlertWithMessage(alertMessage);
+                    alertMessage = "";
+                }
             }
         });
 
         modelSpinner.setAdapter(new ArrayAdapter<>(AddCarActivity.this, android.R.layout.simple_spinner_item, models));
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.d("CDA", "onBackPressed Called");
+        Intent intent = new Intent(this, MainActivity.class);
+        boolean fromReport = getIntent().getBooleanExtra("fromReport", false);
+        intent.putExtra("fromReport", fromReport);
+        this.startActivity(intent);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                goBack();
+                break;
+        }
+        return true;
     }
 
     private void saveCarToFirebase() {
@@ -126,7 +156,10 @@ public class AddCarActivity extends AppCompatActivity {
     }
 
     private void goBack() {
-        Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, MainActivity.class);
+        boolean fromAddNewTicket = getIntent().getBooleanExtra("fromAddNewTicket", false);
+        intent.putExtra("fromAddNewTicket", fromAddNewTicket);
+        this.startActivity(intent);
     }
 
     private void setImageFor(String brand) {
@@ -237,5 +270,33 @@ public class AddCarActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private boolean isValid() {
+        boolean valid = true;
+
+        if (car.getManufacturer() == null) {
+            alertMessage += "\n-Please choose car manufacturer";
+            valid = false;
+        }
+
+        if (car.getModel() == null) {
+            alertMessage += "\n-Please choose car model";
+            valid = false;
+        }
+
+        if (car.getColor() == null) {
+            alertMessage += "\n-Please choose car color";
+            valid = false;
+        }
+
+        String plate = plateEditText.getText().toString();
+        if (TextUtils.isEmpty(plate)) {
+            plateEditText.setError("Required.");
+            alertMessage += "\n-Plate is required.";
+            valid = false;
+        }
+
+        return valid;
     }
 }

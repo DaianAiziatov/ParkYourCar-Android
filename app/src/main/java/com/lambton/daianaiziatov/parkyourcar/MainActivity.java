@@ -57,7 +57,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (getIntent().getBooleanExtra("fromReport", false)) {
             fragmentTransaction.add(R.id.container, new ReportFragment(),"fragment_report");
-        } else  {
+        } else if (getIntent().getBooleanExtra("fromAddNewTicket", false)) {
+            fragmentTransaction.add(R.id.container, new AddNewTicketFragment(),"fragment_add_new_ticket");
+        } else {
             fragmentTransaction.add(R.id.container, new HomeFragment(),"fragment_home");
         }
         fragmentTransaction.commit();
