@@ -43,7 +43,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/contact_number"
-        android:inputType="number"
+        android:inputType="phone"
         app:layout_constraintTop_toBottomOf="@id/user_email_edit_view"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
@@ -70,11 +70,13 @@
 
     <Button
         android:id="@+id/signup_button"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:text="@string/signup"
         android:textSize="16dp"
+        android:textColor="#ffffff"
+        android:background="#000000"
         app:layout_constraintTop_toBottomOf="@id/user_password_confirmation_edit_view"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
