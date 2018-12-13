@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -29,10 +31,12 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.TicketViewHolder> {
+public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.TicketViewHolder> implements Filterable {
 
     private ArrayList<ParkingTicket> ticketArrayList;
+    private ArrayList<ParkingTicket> filterTicketArrayList;
     private Context context;
+    private TicketFilter ticketFilter;
     private StorageReference carLogoRef;
 
     private FirebaseAuth mAuth;
@@ -49,6 +53,7 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Ti
         this.context = context;
         this.itemListener = itemListener;
         this.ticketArrayList = new ArrayList<>();
+        this.filterTicketArrayList = new ArrayList<>();
         FirebaseStorage storage = FirebaseStorage.getInstance();
         this.carLogoRef = storage.getReference().child("cars_logos");
         this.mAuth = FirebaseAuth.getInstance();
@@ -100,6 +105,7 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Ti
                     final ParkingTicket ticket = data.getValue(ParkingTicket.class);
                     Log.d("TICKET_ADDED", ticket.toString());
                     ticketArrayList.add(ticket);
+                    filterTicketArrayList.add(ticket);
                 }
                 notifyDataSetChanged();
 
@@ -158,6 +164,14 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Ti
         alertDialog.show();
     }
 
+    @Override
+    public Filter getFilter() {
+        if (ticketFilter == null) {
+            ticketFilter = new TicketFilter();
+        }
+        return ticketFilter;
+    }
+
     public class TicketViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         ImageView carLogoImageView;
@@ -189,6 +203,36 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Ti
         @Override
         public void onClick(View v) {
             itemListener.recyclerViewListClicked(v, this.getLayoutPosition());
+            notifyDataSetChanged();
+        }
+    }
+
+    private class TicketFilter extends Filter {
+
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            FilterResults filterResults = new FilterResults();
+            if (constraint != null && constraint.length() > 0) {
+                ArrayList<ParkingTicket> tempList = new ArrayList<>();
+
+                for (ParkingTicket ticket: filterTicketArrayList) {
+                    if (ticket.getPlate().toLowerCase().contains(constraint.toString().toLowerCase())) {
+                        tempList.add(ticket);
+                    }
+                }
+
+                filterResults.count = tempList.size();
+                filterResults.values = tempList;
+            } else  {
+                filterResults.count = filterTicketArrayList.size();
+                filterResults.values = filterTicketArrayList;
+            }
+            return filterResults;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            ticketArrayList = (ArrayList<ParkingTicket>) results.values;
             notifyDataSetChanged();
         }
     }
