@@ -21,48 +21,48 @@ During creation of this app I've learned a plenty of new technology and dived in
 
 - SignUp screen
 
-![signup](demos/signup.png)
+<img src="demos/signup.png" width="300">
 
 - Login screen
 
-![signin](demos/login.png)
+<img src="demos/login.png" width="300">
 
 - Home - user info + user can add new car into the list as well as delete one from there
 
-![home](demos/home.png)
+<img src="demos/home.png" width="300">
 
 - Menu
 
-![menu](demos/menu.png)
+<img src="demos/menu.png" width="300">
 
 - Update profile - taping "edit profile" button on home screen
 
-![update](demos/update_profile.png)
+<img src="demos/update_profile.png" width="300">
 
 - Add new ticket - during creating new ticket user can choose car from personal lsit or add new car to list
 
-![add](demos/new_ticket.png)
+<img src="demos/new_ticket.png" width="300">
 
 - Add new car - screen for creating new car for user list
 
-![edit](demos/add_new_car.png)
+<img src="demos/add_new_car.png" width="300">
 
 - Report screen - list of all created tickets by user. They can be filetered by plate number
 
-![report](demos/report.png)
+<img src="demos/report.png" width="300">
 
 - Ticket - summary information of the ticket
 
-![pdf](demos/receipt.png)
+<img src="demos/receipt.png" width="300">
 
 - Contact - taping help button on home screen
 
-![contacts](demos/contacts.png)
+<img src="demos/contacts.png" width="300">
 
 - Instruction - I've just got this instruction from third party parking website. I use JavaScript code to crop webpage for proper format.
 
-![instruction](demos/instruction.png)
+<img src="demos/instruction.png" width="300">
 
 - Location - current user location
 
-![location](demos/location.png)
+<img src="demos/location.png" width="300">
